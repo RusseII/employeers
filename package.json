@@ -1,0 +1,26 @@
+{
+  "name": "react-native-confimation-code-input-example",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-native-scripts": "^1.5.0",
+    "jest-expo": "^23.0.0",
+    "react-test-renderer": "16.0.0"
+  },
+  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "scripts": {
+    "copy-imports": "cp -r '../components/' './_import/'",
+    "install": "npm run copy-imports",
+    "start": "npm run copy-imports; react-native-scripts start"
+  },
+  "jest": {
+    "preset": "jest-expo"
+  },
+  "dependencies": {
+    "expo": "^23.0.0",
+    "react": "16.0.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-23.0.1.tar.gz",
+    "react-native-extended-stylesheet": "0.8.0",
+    "react-navigation": "1.0.0-beta.22"
+  }
+}

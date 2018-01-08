@@ -12,11 +12,22 @@ import PropTypes from "prop-types";
 import { NormalButton } from "../components/Button";
 import CodeInput from "../../_import/ConfirmationCodeInput";
 
+import {
+  loadCompany,
+  getCompanyData,
+  saveCompanyIndex
+} from "../actions/companies";
+import { connect } from "react-redux";
+
 class Pin extends Component {
   static propTypes = {
-    navigation: PropTypes.object
+    navigation: PropTypes.object,
+    dispatch: PropTypes.func,
+    companyData: PropTypes.object
   };
-
+  componentWillMount() {
+    this.props.dispatch(getCompanyData());
+  }
   state = { code: "" };
   _alert = message =>
     Alert.alert("Confirmation Code", message, [{ text: "OK" }], {
@@ -24,13 +35,28 @@ class Pin extends Component {
     });
 
   onFulfill3 = code => {
-    const isValid = code === "12345";
-    if (isValid) {
-      this.setState({ code });
-      console.log("the code entered was correct2!");
-      this.props.navigation.navigate("UploadPage");
+    let data = this.props.companyData;
+    console.log(data, "ONE");
+
+    console.log(data.data.length);
+    for (i = 0; i < data.data.length; i++) {
+      if (code == data.data[i].pin) {
+        console.log("CODE EXISTS FOR", data.data[i].website);
+        this.props.dispatch(saveCompanyIndex(i));
+        this.props.navigation.navigate("UploadPage");
+        break;
+      } else {
+        console.log("code does not exist");
+      }
     }
-    this._alert(isValid ? "Successful!" : "Code mismatch!");
+
+    // const isValid = code === "12345";
+    // if (isValid) {
+    //   this.setState({ code });
+    //   console.log("the code entered was correct2!");
+    //   this.props.navigation.navigate("UploadPage");
+    // }
+    // this._alert(isValid ? "Successful!" : "Code mismatch!");
   };
   navigateToVideo = () => {
     console.log("buttonPress");
@@ -39,37 +65,26 @@ class Pin extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding" style={styles.container}>
-        <View style={styles.container}>
-          <View style={styles.container2} />
-          <View style={[styles.inputWrapper, { backgroundColor: "#2F0B3A" }]}>
-            <Text
-              style={[
-                styles.inputLabel,
-                { color: "#fff", textAlign: "center" }
-              ]}
-            >
-              Enter Pin Code given on employeers page. If no pin code was given,
-              please visit "DeepHire.io/employeers if you do not have a code"
-            </Text>
-            <CodeInput
-              ref="codeInputRef3"
-              codeLength={5}
-              borderType="circle"
-              autoFocus={false}
-              codeInputStyle={{ fontWeight: "800" }}
-              onFulfill={this.onFulfill3}
-            />
-            <NormalButton onPress={this.navigateToVideo} text="Runescape" />
-          </View>
-        </View>
-      </KeyboardAvoidingView>
-    );
+      <View style={styles.container}>
+        <View style={styles.inputWrapper}>
+          <Text style={styles.inputLabel}>Enter your Company Pin</Text>
 
-    // <View style={styles.container}>
-    //   <View style={styles.container2} />
-    //   <View style={styles.container3} />
-    // </View>
+          <CodeInput
+            ref="codeInputRef3"
+            codeLength={5}
+            borderType="circle"
+            autoFocus={true}
+            codeInputStyle={{ fontWeight: "800" }}
+            onFulfill={this.onFulfill3}
+          />
+          <Text style={styles.info}>
+            Yo! WECLOME TO THE DEEP HIRE. Register here :gmail.com.
+          </Text>
+          <NormalButton onPress={this.navigateToVideo} text="Runescape" />
+        </View>
+        <View style={styles.bottomView} />
+      </View>
+    );
   }
 }
 
@@ -78,40 +93,37 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5F6CE"
   },
-  container2: {
-    flex: 1,
-    backgroundColor: "#F536CE"
-  },
-  container3: {
-    flex: 1,
-    backgroundColor: "#51CE"
-  },
-  topView: {
-    flex: 1
-  },
-  titleWrapper: {
-    flex: 1,
-    justifyContent: "center",
-    flexDirection: "row"
-  },
-  title: {
-    color: "red",
-    fontSize: 16,
-    fontWeight: "800",
-    paddingVertical: 30
-  },
-  wrapper: {
-    marginTop: 30
-  },
   inputWrapper: {
-    flex: 2,
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
     paddingVertical: 50,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+    backgroundColor: "#217bf6"
   },
   inputLabel: {
-    fontSize: 14,
-    fontWeight: "800"
+    fontSize: 25,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#fff"
+  },
+  info: {
+    fontSize: 9,
+    paddingTop: 20,
+
+    fontWeight: "200",
+
+    color: "#fff"
+  },
+  bottomView: {
+    flex: 0,
+
+    backgroundColor: "#c17bf6"
   }
 });
 
-export default Pin;
+const mapStateToProps = state => {
+  let companyData = state.companies.myCompanies.data;
+  return { companyData };
+};
+export default connect(mapStateToProps)(Pin);

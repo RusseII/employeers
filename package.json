@@ -21,6 +21,7 @@
     "react": "16.0.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-23.0.1.tar.gz",
     "react-native-extended-stylesheet": "0.8.0",
-    "react-navigation": "1.0.0-beta.22"
+    "react-navigation": "1.0.0-beta.22",
+    "redux-saga": "0.16.0"
   }
 }

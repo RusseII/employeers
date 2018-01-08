@@ -9,12 +9,16 @@ const PinStack = StackNavigator({
     screen: Pin,
     navigationOptions: {
       header: () => null,
-      headerTitle: "Home"
+      headerTitle: "Home",
+      mode: "modal"
     }
   },
   UploadPage: {
     screen: UploadPage,
-    navigationOptions: {}
+    navigationOptions: {
+      header: () => null,
+      mode: "modal"
+    }
   }
 });
 

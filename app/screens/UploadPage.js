@@ -7,7 +7,7 @@ import { NormalButton } from "../components/Button";
 import { createStore } from "redux";
 import todoApp from "../reducers";
 import { connect } from "react-redux";
-import { loadCompany } from "../actions/companies";
+import { loadCompany, getCompanyData } from "../actions/companies";
 
 // let store = createStore(todoApp);
 // console.log(store.getState());
@@ -19,45 +19,66 @@ class UploadPage extends Component {
   static propTypes = {
     navigation: PropTypes.object,
     dispatch: PropTypes.func,
-    mytext: PropTypes.string
+    mytext: PropTypes.string,
+    companyData: PropTypes.object,
+    companyIndex: PropTypes.number
   };
+  componentWillMount() {
+    this.props.dispatch(getCompanyData());
+  }
 
   navigateToVideo = () => {
     console.log("clicked");
-    if (this.props.mytext == "test") {
-      this.props.dispatch(loadCompany("hi"));
-    }
+    // if (this.props.mytext == "test") {
+    //   this.props.dispatch(loadCompany("USD"));
+    // }
 
-    if (this.props.mytext == "hi") {
-      this.props.dispatch(loadCompany("test"));
-    }
+    // if (this.props.mytext == "USD") {
+    //   this.props.dispatch(loadCompany("test"));
+    // }
+    this.props.dispatch(getCompanyData());
+    this.props.dispatch(loadCompany("setText"));
+    // this.props.dispatch(loadCompany("USD"));
+
+    console.log(this.props.companyData, "COMPData");
   };
 
   render() {
     return (
-      <View styles={styles.text}>
-        <NormalButton onPress={this.navigateToVideo} text={this.props.mytext} />
+      <View style={styles.background}>
+        <StatusBar hidden={false} barStyle="light-content" />
+        <NormalButton
+          onPress={this.navigateToVideo}
+          text={this.props.companyData.data[this.props.companyIndex].website}
+        />
+        <Text style={styles.text}>
+          Welcome to{" "}
+          {this.props.companyData.data[this.props.companyIndex].website} profile
+          page!
+        </Text>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  test: {
+  background: {
     flex: 1,
-    alignItems: "center",
-    height: 200,
-    justifyContent: "center",
-    backgroundColor: "#b34325"
+    backgroundColor: "#217bf6"
   }
 });
 
 const mapStateToProps = state => {
-  const mytext = state.companies.companies.text;
-  //console.log(mytext, "here");
+  const mytext = state.companies.myCompanies.text;
+  let companyData = state.companies.myCompanies.data;
+  const companyIndex = state.companies.myCompanies.companyIndex;
+
+  console.log(companyIndex, "THIS IS THE ONLY IMPORTANT ONE.");
 
   return {
-    mytext
+    mytext,
+    companyData,
+    companyIndex
   };
 };
 
